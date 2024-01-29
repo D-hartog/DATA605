@@ -1,0 +1,93 @@
+---
+title: "DATA 605: Homework 1"
+author: "Dirk Hartog"
+date: "2024-01-28"
+output: html_document
+---
+
+```{r}
+library(gifski)
+```
+
+## Build the first letters for both your first and last name using point plots in R
+
+```{r initials}
+
+x <- c(rep(-2,500),seq(-2,-1, length.out = 1000),rep(-1,250),seq(-1,-2, length.out = 1000),
+       rep(0,500),seq(0,1,length.out=1000), rep(1,500))
+
+y <- c(seq(-1,1,length.out=500), seq(1,0.5,length.out=1000), seq(0.5,-0.5,length.out=250),seq(-0.5,-1,length.out=1000),
+       seq(-1,1,length.out=500),rep(0,1000), seq(-1,1,length.out=500))
+
+z <- rbind(x,y)
+
+plot(y~x, xlim=c(-3,3), ylim=c(-3,3), col = "turquoise",
+     main = "My Initials")
+```
+
+## Write R code that will left multiply (%*%) a square matrix (x) against each of the vectors of points (y). Initially, that square matrix will be the Identity matrix. 
+
+## Use a loop that changes the transformation matrix incrementally to demonstrate 
+1. shear
+2. scaling
+3. rotation
+4. projection in animated fashion. 
+
+
+### Shear
+
+```{r shear, warning = FALSE}
+x11()
+
+for (val in seq(-3,3,length.out=50)) {
+  shear_matrix <- matrix(c(2, 0, val, 1), nrow=2, ncol=2)
+  shear_m <- apply(z, 2, function(x) x %*% shear_matrix)
+  plot(shear_m[2,] ~ shear_m[1,], xlim=c(-8, 8), ylim=c(-8, 8), col = "turquoise", 
+       main = "Shear")
+  Sys.sleep(0.05)
+}
+```
+
+### Scale
+
+```{r scale, warning = FALSE}
+x11()
+
+for (val in seq(-3,3,length.out=50)) {
+  scale_matrix <- matrix(c(val, 0, 0, val), nrow=2, ncol=2)
+  scale_m <- apply(z, 2, function(x) x %*% scale_matrix)
+  plot(scale_m[2,] ~ scale_m[1,], xlim=c(-8,8), ylim=c(-8,8), col = "turquoise", 
+       main = "Scale")
+  Sys.sleep(0.05)
+  }
+```
+
+### Rotation
+
+```{r rotate, warning = FALSE}
+x11()
+
+for (val in seq(-3,3,length.out=50)) {
+  rotate_z <- rbind(z, numeric(3000))
+  rotate_matrix <- matrix(c(cos(val), sin(val), 0, -sin(val), cos(val), 0, 0, 0, 1), nrow=3, ncol=3)
+  rotate_m <- apply(rotate_z, 2, function(x) x %*% rotate_matrix)
+  plot(rotate_m[2,] ~ rotate_m[1,], xlim=c(-8,8), ylim=c(-8,8), col = "turquoise",
+       main = "Rotate")
+  Sys.sleep(0.05)
+  }
+```
+
+### Projection 
+
+```{r projection, warning = FALSE}
+x11()
+
+for (val in seq(-3,3,length.out=50)) {
+  projection_z <- rbind(z, numeric(3000))
+  projection_matrix <- matrix(c(val,0,0,0,1,0,0,0,1), nrow=3, ncol=3)
+  projection_m <- apply(projection_z, 2, function(x) x %*% projection_matrix)
+  plot(projection_m[2,] ~ projection_m[1,], xlim=c(-8,8), ylim=c(-8,8), col = "turquoise", main = "Projection")
+  Sys.sleep(0.05)
+}
+```
+
